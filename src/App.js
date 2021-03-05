@@ -1,21 +1,22 @@
 import "./App.css";
-import React, {useRef} from "react";
+import React, { useRef, useState, useEffect } from "react";
 import * as tf from "@tensorflow/tfjs";
 import * as handpose from "@tensorflow-models/handpose";
 import Webcam from "react-webcam";
 import {drawHand} from "./util";
+import * as fp from "fingerpose";
+import thumbsDown from "./fingerposes/thumbsDown";
 
 function App() {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
+  const [detectedGesture, setDetectedGesture] = useState("no gesture");
 
   const runHandpose = async () => {
     const net = await handpose.load();
-    console.log("Handpose model loaded.");
-
     setInterval(() => {
       detect(net)
-    }, 100)
+    }, 100);
   };
 
   const detect = async (net) => {
@@ -31,57 +32,65 @@ function App() {
       canvasRef.current.height = videoHeight;
 
       const hand = await net.estimateHands(video);
-      console.log(hand);
+      if (hand.length > 0) {
+        const GE = new fp.GestureEstimator([fp.Gestures.VictoryGesture, fp.Gestures.ThumbsUpGesture, thumbsDown]);
+        const gesture = await GE.estimate(hand[0].landmarks, 7);
+        if (gesture.gestures.length > 0) {
+          console.log(gesture)
+          const confidence = gesture.gestures.map(
+            (prediction) => prediction.confidence
+          );
+          const maxConfidence = confidence.indexOf(
+            Math.max.apply(null, confidence)
+          );
+          setDetectedGesture(gesture.gestures[maxConfidence].name);
+        } else {
+          setDetectedGesture("no gesture");
+        }
+      }
 
       const ctx = canvasRef.current.getContext("2d");
       drawHand(hand, ctx);
     }
   };
 
-  const WebcamComponent = () => {
-    return (
-      <Webcam
-        ref={webcamRef}
-        style={{
-          position: "absolute",
-          marginLeft: "auto",
-          marginRight: "auto",
-          left: 0,
-          right: 0,
-          textAlign: "center",
-          zindex: 9,
-          width: 640,
-          height: 480,
-        }}
-      />
-    )
-  };
-
-  const CanvasComponent = () => {
-    return (
-      <canvas
-        ref={canvasRef}
-        style={{
-          position: "absolute",
-          marginLeft: "auto",
-          marginRight: "auto",
-          left: 0,
-          right: 0,
-          textAlign: "center",
-          zindex: 9,
-          width: 640,
-          height: 480,
-        }}
-      />)
-  };
-
-  runHandpose();
+  useEffect(() => {
+  runHandpose()
+}, [])
 
   return (
     <div className="App">
       <header className="App-header">
-        <WebcamComponent/>
-        <CanvasComponent/>
+        <Webcam
+          ref={webcamRef}
+          style={{
+            position: "absolute",
+            marginLeft: "auto",
+            marginRight: "auto",
+            left: 0,
+            right: 0,
+            textAlign: "center",
+            zindex: 9,
+            width: 640,
+            height: 480,
+          }}
+        />
+
+        <canvas
+          ref={canvasRef}
+          style={{
+            position: "absolute",
+            marginLeft: "auto",
+            marginRight: "auto",
+            left: 0,
+            right: 0,
+            textAlign: "center",
+            zindex: 9,
+            width: 640,
+            height: 480,
+          }}
+        />
+        {<p style={{marginBottom: "1000px"}}>{detectedGesture}</p>}
       </header>
     </div>
   );
