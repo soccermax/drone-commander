@@ -3,41 +3,36 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "fingerpose": "0.0.2",
     "@tensorflow-models/handpose": "0.0.7",
     "@tensorflow/tfjs": "^3.2.0",
-    "@testing-library/jest-dom": "^5.11.9",
-    "@testing-library/react": "^11.2.5",
-    "@testing-library/user-event": "^12.8.1",
-    "fingerpose": "0.0.2",
-    "handtrackjs": "0.0.13",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
+    "react-router-dom": "^5.2.0",
+    "react-webcam": "^5.2.3",
+    "handtrackjs": "^0.0.13",
+    "crypto-browserify": "^3.12.0",
+    "buffer": "^6.0.3",
+    "stream-browserify": "^3.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "@babel/preset-react": "^7.12.5",
+    "babel-loader": "^8.1.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-scripts": "4.0.3",
-    "react-webcam": "^5.2.3",
-    "web-vitals": "^1.1.0"
+    "webpack": "^5.4.0",
+    "webpack-cli": "^4.2.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "webpack --mode development --watch"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
     ]
   }
 }

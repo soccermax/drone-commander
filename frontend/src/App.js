@@ -1,4 +1,4 @@
-import "./App.css";
+// import "./App.css";
 import React, {useRef, useState, useEffect} from "react";
 import Webcam from "react-webcam";
 
