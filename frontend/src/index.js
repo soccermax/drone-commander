@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import Dashboard from "./Dashboard";
 // import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
-  <App />,
+  <Dashboard />,
   // eslint-disable-next-line no-undef
   document.getElementById("root")
 );
