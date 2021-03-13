@@ -3,7 +3,6 @@ from django.http import HttpResponse
 from .droneHelper import connect, get_battery, take_off, land, back_flip
 
 
-# Create your views here.
 def main(request):
     return HttpResponse("Hello")
 

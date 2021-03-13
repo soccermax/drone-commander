@@ -7,5 +7,5 @@ urlpatterns = [
     path('takeOff', take_off_drone),
     path('land', land_drone),
     path('batteryLevel', battery_level_drone),
-    path('backFlip', back_flip_drone),
+    path('backFlip', back_flip_drone)
 ]
