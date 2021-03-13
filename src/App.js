@@ -1,63 +1,97 @@
 import "./App.css";
-import React, { useRef, useState, useEffect } from "react";
-import * as tf from "@tensorflow/tfjs";
-import * as handpose from "@tensorflow-models/handpose";
+import React, {useRef, useState, useEffect} from "react";
 import Webcam from "react-webcam";
-import {drawHand} from "./util";
-import * as fp from "fingerpose";
-import thumbsDown from "./fingerposes/thumbsDown";
+
+import * as handTrack from 'handtrackjs';
 
 function App() {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
-  const [detectedGesture, setDetectedGesture] = useState("no gesture");
+  let isVideo = false;
+  let model = null;
+  let video;
 
-  const runHandpose = async () => {
-    const net = await handpose.load();
-    setInterval(() => {
-      detect(net)
-    }, 100);
-  };
+  let historyValues = [];
+  const MAX_NUMBER_OF_VALUES = 10;
+  const CHANGE_THRESHOLD = 30;
+  let checkCurrentlyRunning = false;
 
-  const detect = async (net) => {
-    if (webcamRef.current && webcamRef.current.video.readyState === 4) {
-      const video = webcamRef.current.video;
-      const videoWidth = webcamRef.current.video.videoWidth;
-      const videoHeight = webcamRef.current.video.videoHeight;
+  const modelParams = {
+    flipHorizontal: true,   // flip e.g for video
+    maxNumBoxes: 20,        // maximum number of boxes to detect
+    iouThreshold: 0.5,      // ioU threshold for non-max suppression
+    scoreThreshold: 0.85,    // confidence threshold for predictions.
+  }
 
-      webcamRef.current.video.width = videoWidth;
-      webcamRef.current.video.height = videoHeight;
-
-      canvasRef.current.width = videoWidth;
-      canvasRef.current.height = videoHeight;
-
-      const hand = await net.estimateHands(video);
-      if (hand.length > 0) {
-        const GE = new fp.GestureEstimator([fp.Gestures.VictoryGesture, fp.Gestures.ThumbsUpGesture, thumbsDown]);
-        const gesture = await GE.estimate(hand[0].landmarks, 7);
-        if (gesture.gestures.length > 0) {
-          console.log(gesture)
-          const confidence = gesture.gestures.map(
-            (prediction) => prediction.confidence
-          );
-          const maxConfidence = confidence.indexOf(
-            Math.max.apply(null, confidence)
-          );
-          setDetectedGesture(gesture.gestures[maxConfidence].name);
-        } else {
-          setDetectedGesture("no gesture");
-        }
-      }
-
-      const ctx = canvasRef.current.getContext("2d");
-      drawHand(hand, ctx);
+  const detectLeftRight = (xAxis) => {
+    if (checkCurrentlyRunning) {
+      return;
     }
-  };
+    if (historyValues.length < MAX_NUMBER_OF_VALUES) {
+      historyValues.push(xAxis);
+    } else {
+      console.log("start compare");
+      checkCurrentlyRunning = true;
+      historyValues.shift();
+      historyValues.push(xAxis);
+      let differenceOf100Values = 0;
+      for (let i = 0; i < historyValues.length - 1; i++) {
+        const difference = historyValues[i] - historyValues[i + 1];
+        differenceOf100Values += difference;
+        // console.log(differenceOf100Values);
+      }
+      if (differenceOf100Values >= CHANGE_THRESHOLD) {
+        console.log("moving left detected!");
+      } else if (differenceOf100Values <= CHANGE_THRESHOLD * -1) {
+        console.log("moving right detected!");
+      } else {
+        console.log("no significant movement");
+      }
+      historyValues = [];
+      checkCurrentlyRunning = false;
+    }
+  }
+
+  function startVideo() {
+    handTrack.startVideo(video).then(function (status) {
+      console.log("video started", status);
+      if (status) {
+        isVideo = true
+        runDetection()
+      } else {
+        console.log("Please enable video");
+      }
+    });
+  }
+
+  function runDetection() {
+    model.detect(video).then(predictions => {
+      if (predictions.length > 0) {
+        detectLeftRight(predictions[0].bbox[0]);
+      }
+      model.renderPredictions(predictions, canvasRef.current, canvasRef.current.getContext("2d"), video);
+      if (isVideo) {
+        requestAnimationFrame(runDetection);
+      }
+    });
+  }
 
   useEffect(() => {
-  runHandpose()
-}, [])
-
+    handTrack.load(modelParams).then(lmodel => {
+      // detect objects in the image.
+      model = lmodel;
+      console.log("Loaded Model!");
+      if (webcamRef.current && webcamRef.current.video.readyState === 4) {
+        video = webcamRef.current.video;
+        startVideo();
+      } else {
+        setTimeout(() => {
+          video = webcamRef.current.video;
+          startVideo();
+        }, 3000)
+      }
+    });
+  }, [])
   return (
     <div className="App">
       <header className="App-header">
@@ -77,6 +111,7 @@ function App() {
         />
 
         <canvas
+          id="canvasId"
           ref={canvasRef}
           style={{
             position: "absolute",
@@ -90,7 +125,6 @@ function App() {
             height: 480,
           }}
         />
-        {<p style={{marginBottom: "1000px"}}>{detectedGesture}</p>}
       </header>
     </div>
   );
