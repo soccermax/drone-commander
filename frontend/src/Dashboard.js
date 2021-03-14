@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import clsx from 'clsx';
 import {makeStyles} from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -104,6 +104,7 @@ const useStyles = makeStyles((theme) => ({
   container: {
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
+    maxWidth: "1440px"
   },
   paper: {
     padding: theme.spacing(2),
@@ -122,6 +123,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Dashboard() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+  const [detectedGesture, setDetectedGesture] = useState("no gesture");
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -172,7 +174,7 @@ export default function Dashboard() {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer}/>
-        <Container maxWidth="lg" className={classes.container}>
+        <Container className={classes.container}>
           <Grid
             container
             direction="row"
@@ -180,19 +182,29 @@ export default function Dashboard() {
             alignItems="center"
             spacing={3}
           >
+            {/* Buttons */}
+            <Grid item xs={3}>
+              <Grid container direction="column" spacing={3}>
+                <Grid item xs={12}>
+                  <Paper className={fixedHeightBigPaper}>
+                    <DroneControlButtons detectedGesture={detectedGesture}/>
+                  </Paper>
+                </Grid>
+              </Grid>
+            </Grid>
             {/* Video */}
-            <Grid item xs={8}>
+            <Grid item xs={6}>
               <Paper className={fixedHeightBigPaper}>
-                <Video/>
+                <Video detectedGesture={detectedGesture} setDetectedGesture={setDetectedGesture}/>
               </Paper>
             </Grid>
             {/* Buttons */}
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               <Grid container direction="column" spacing={3}>
                 <Grid item xs={12}>
-                <Paper className={fixedHeightBigPaper}>
-                  <DroneControlButtons/>
-                </Paper>
+                  <Paper className={fixedHeightBigPaper}>
+                    <DroneControlButtons detectedGesture={detectedGesture}/>
+                  </Paper>
                 </Grid>
               </Grid>
             </Grid>

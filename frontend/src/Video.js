@@ -10,12 +10,11 @@ import Grid from "@material-ui/core/Grid";
 
 const useStyles = makeStyles((theme) => ({}));
 
-export default function Video() {
+export default function Video({detectedGesture, setDetectedGesture}) {
   const theme = useTheme();
   const classes = useStyles();
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
-  const [detectedGesture, setDetectedGesture] = useState("no gesture");
 
   const runHandpose = async () => {
     const net = await handpose.load();
