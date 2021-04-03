@@ -1,16 +1,20 @@
-import "./App.css";
-import React, { useRef, useState, useEffect } from "react";
-import * as tf from "@tensorflow/tfjs";
+import React, {useRef, useState, useEffect} from "react";
+import {makeStyles, useTheme} from '@material-ui/core/styles';
 import * as handpose from "@tensorflow-models/handpose";
 import Webcam from "react-webcam";
 import {drawHand} from "./util";
 import * as fp from "fingerpose";
 import thumbsDown from "./fingerposes/thumbsDown";
+import * as tf from "@tensorflow/tfjs";
+import Grid from "@material-ui/core/Grid";
 
-function App() {
+const useStyles = makeStyles((theme) => ({}));
+
+export default function Video({detectedGesture, setDetectedGesture}) {
+  const theme = useTheme();
+  const classes = useStyles();
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
-  const [detectedGesture, setDetectedGesture] = useState("no gesture");
 
   const runHandpose = async () => {
     const net = await handpose.load();
@@ -55,45 +59,36 @@ function App() {
   };
 
   useEffect(() => {
-  runHandpose()
-}, [])
+    runHandpose()
+  }, []);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <Webcam
-          ref={webcamRef}
-          style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 0,
-            textAlign: "center",
-            zindex: 9,
-            width: 640,
-            height: 480,
-          }}
-        />
-
-        <canvas
-          ref={canvasRef}
-          style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 0,
-            textAlign: "center",
-            zindex: 9,
-            width: 640,
-            height: 480,
-          }}
-        />
-        {<p style={{marginBottom: "1000px"}}>{detectedGesture}</p>}
-      </header>
-    </div>
+    <React.Fragment>
+      <div style={{display: "flex", justifyContent: "center"}}>
+      <Webcam
+        ref={webcamRef}
+        audio={false}
+        style={{
+          position: "absolute",
+          textAlign: "center",
+          marginLeft: "auto",
+          zindex: 9,
+          width: 640,
+          height: 480,
+        }}
+      />
+      <canvas
+        ref={canvasRef}
+        style={{
+          textAlign: "center",
+          position: "absolute",
+          marginLeft: "auto",
+          zindex: 9,
+          width: 640,
+          height: 480,
+        }}
+      />
+      </div>
+    </React.Fragment>
   );
 }
-
-export default App;
