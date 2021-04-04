@@ -6,11 +6,11 @@ import {drawHand} from "./util";
 import * as fp from "fingerpose";
 import thumbsDown from "./fingerposes/thumbsDown";
 import * as tf from "@tensorflow/tfjs";
-import {controlDroneBasedOnGesture} from "./utils/droneControl";
+import Grid from "@material-ui/core/Grid";
 
 const useStyles = makeStyles((theme) => ({}));
 
-export default function Video({detectedGesture, setDetectedGesture, setDroneConnectionStatus, setHandPoseModelStatus}) {
+export default function Video({detectedGesture, setDetectedGesture}) {
   const theme = useTheme();
   const classes = useStyles();
   const webcamRef = useRef(null);
@@ -36,14 +36,6 @@ export default function Video({detectedGesture, setDetectedGesture, setDroneConn
       canvasRef.current.height = videoHeight;
 
       const hand = await net.estimateHands(video);
-      setHandPoseModelStatus(prevValue => {
-        if (prevValue === "loaded") {
-          return prevValue;
-        } else {
-          return "loaded";
-        }
-      });
-
       if (hand.length > 0) {
         const GE = new fp.GestureEstimator([fp.Gestures.VictoryGesture, fp.Gestures.ThumbsUpGesture, thumbsDown]);
         const gesture = await GE.estimate(hand[0].landmarks, 7);
@@ -56,12 +48,6 @@ export default function Video({detectedGesture, setDetectedGesture, setDroneConn
             Math.max.apply(null, confidence)
           );
           setDetectedGesture(gesture.gestures[maxConfidence].name);
-          setDroneConnectionStatus(connectionStatus => {
-            if (connectionStatus === "CONNECTED") {
-              controlDroneBasedOnGesture(gesture.gestures[maxConfidence].name);
-            }
-            return connectionStatus;
-          });
         } else {
           setDetectedGesture("no gesture");
         }
@@ -79,29 +65,29 @@ export default function Video({detectedGesture, setDetectedGesture, setDroneConn
   return (
     <React.Fragment>
       <div style={{display: "flex", justifyContent: "center"}}>
-        <Webcam
-          ref={webcamRef}
-          audio={false}
-          style={{
-            position: "absolute",
-            textAlign: "center",
-            marginLeft: "auto",
-            zindex: 9,
-            width: 640,
-            height: 480,
-          }}
-        />
-        <canvas
-          ref={canvasRef}
-          style={{
-            textAlign: "center",
-            position: "absolute",
-            marginLeft: "auto",
-            zindex: 9,
-            width: 640,
-            height: 480,
-          }}
-        />
+      <Webcam
+        ref={webcamRef}
+        audio={false}
+        style={{
+          position: "absolute",
+          textAlign: "center",
+          marginLeft: "auto",
+          zindex: 9,
+          width: 640,
+          height: 480,
+        }}
+      />
+      <canvas
+        ref={canvasRef}
+        style={{
+          textAlign: "center",
+          position: "absolute",
+          marginLeft: "auto",
+          zindex: 9,
+          width: 640,
+          height: 480,
+        }}
+      />
       </div>
     </React.Fragment>
   );
