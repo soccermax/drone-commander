@@ -123,6 +123,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Dashboard() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+  const [droneConnectionStatus, setDoneConnectionStatus] = React.useState("Not connected");
   const [detectedGesture, setDetectedGesture] = useState("no gesture");
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -187,7 +188,7 @@ export default function Dashboard() {
               <Grid container direction="column" spacing={3}>
                 <Grid item xs={12}>
                   <Paper className={fixedHeightBigPaper}>
-                    <DroneControlButtons detectedGesture={detectedGesture}/>
+                    <DroneControlButtons detectedGesture={detectedGesture} droneConnectionStatus={droneConnectionStatus} setDoneConnectionStatus={setDoneConnectionStatus}/>
                   </Paper>
                 </Grid>
               </Grid>
@@ -195,7 +196,7 @@ export default function Dashboard() {
             {/* Video */}
             <Grid item xs={6}>
               <Paper className={fixedHeightBigPaper}>
-                <Video detectedGesture={detectedGesture} setDetectedGesture={setDetectedGesture}/>
+                <Video detectedGesture={detectedGesture} setDetectedGesture={setDetectedGesture} droneConnectionStatus={droneConnectionStatus}/>
               </Paper>
             </Grid>
             {/* Buttons */}
@@ -203,7 +204,7 @@ export default function Dashboard() {
               <Grid container direction="column" spacing={3}>
                 <Grid item xs={12}>
                   <Paper className={fixedHeightBigPaper}>
-                    <DroneControlButtons detectedGesture={detectedGesture}/>
+                    {/*<DroneControlButtons detectedGesture={detectedGesture}/>*/}
                   </Paper>
                 </Grid>
               </Grid>

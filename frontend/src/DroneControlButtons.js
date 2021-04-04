@@ -4,6 +4,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Title from './Title';
 import {Button} from "@material-ui/core";
+import axios from 'axios';
 
 const useStyles = makeStyles({
   depositContext: {
@@ -17,7 +18,21 @@ const useStyles = makeStyles({
   }
 });
 
-export default function DroneControlButtons({detectedGesture}) {
+
+export default function DroneControlButtons({detectedGesture, droneConnectionStatus, setDoneConnectionStatus}) {
+  const connectToDrone = async () => {
+    try {
+      console.log("send request");
+      setTimeout(() => {
+        setDoneConnectionStatus("connected")
+      }, 2000);
+      const response = await axios.get("http://localhost:8000/api/connectDrone");
+      console.log(response);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -29,7 +44,9 @@ export default function DroneControlButtons({detectedGesture}) {
         <Typography color="textSecondary">
           {detectedGesture}
         </Typography>
-        <Button className={classes.buttonCenter} variant="contained" color="primary">Connect to drone</Button>
+        <Button className={classes.buttonCenter} variant="contained" onClick={connectToDrone} color="primary">Connect to
+          drone</Button>
+        <p>Connection Status: {droneConnectionStatus}</p>
       </div>
       <div>
         <Link color="primary" href="#" onClick={() => {
