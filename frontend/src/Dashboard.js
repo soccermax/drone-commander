@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import clsx from 'clsx';
 import {makeStyles} from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -21,6 +21,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import {mainListItems} from './listItems';
 import Video from './Video';
 import DroneControlButtons from './DroneControlButtons';
+import Status from './Status';
 
 function Copyright() {
   return (
@@ -123,14 +124,19 @@ const useStyles = makeStyles((theme) => ({
 export default function Dashboard() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-  const [droneConnectionStatus, setDroneConnectionStatus] = React.useState("Not connected");
+  const [droneConnectionStatus, setDroneConnectionStatus] = React.useState("DISCONNECTED");
   const [detectedGesture, setDetectedGesture] = useState("no gesture");
+  const [handPoseModelStatus, setHandPoseModelStatus] = useState("loading...");
   const handleDrawerOpen = () => {
     setOpen(true);
   };
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  // useEffect(() => {
+  //
+  // })
   // const fixedHeightSmallPaper = clsx(classes.paper, classes.fixedHeightSmallPaper);
   const fixedHeightBigPaper = clsx(classes.paper, classes.fixedHeightBigPaper);
 
@@ -188,7 +194,8 @@ export default function Dashboard() {
               <Grid container direction="column" spacing={3}>
                 <Grid item xs={12}>
                   <Paper className={fixedHeightBigPaper}>
-                    <DroneControlButtons detectedGesture={detectedGesture} droneConnectionStatus={droneConnectionStatus} setDroneConnectionStatus={setDroneConnectionStatus}/>
+                    <DroneControlButtons detectedGesture={detectedGesture} droneConnectionStatus={droneConnectionStatus}
+                                         setDroneConnectionStatus={setDroneConnectionStatus}/>
                   </Paper>
                 </Grid>
               </Grid>
@@ -196,7 +203,8 @@ export default function Dashboard() {
             {/* Video */}
             <Grid item xs={6}>
               <Paper className={fixedHeightBigPaper}>
-                <Video detectedGesture={detectedGesture} setDetectedGesture={setDetectedGesture} setDroneConnectionStatus={setDroneConnectionStatus}/>
+                <Video detectedGesture={detectedGesture} setDetectedGesture={setDetectedGesture}
+                       setDroneConnectionStatus={setDroneConnectionStatus} setHandPoseModelStatus={setHandPoseModelStatus}/>
               </Paper>
             </Grid>
             {/* Buttons */}
@@ -204,7 +212,7 @@ export default function Dashboard() {
               <Grid container direction="column" spacing={3}>
                 <Grid item xs={12}>
                   <Paper className={fixedHeightBigPaper}>
-                    {/*<DroneControlButtons detectedGesture={detectedGesture}/>*/}
+                    <Status droneConnectionStatus={droneConnectionStatus} handPoseModelStatus={handPoseModelStatus}/>
                   </Paper>
                 </Grid>
               </Grid>
