@@ -9,7 +9,7 @@
   <component name="TemplatesService">
     <option name="TEMPLATE_FOLDERS">
       <list>
-        <option value="$MODULE_DIR$/node_modules/workbox-build/src/templates" />
+        <option value="$MODULE_DIR$/frontend/templates" />
       </list>
     </option>
   </component>
