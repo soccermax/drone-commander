@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .droneHelper import connect, get_battery, take_off, land, back_flip
+from .droneHelper import connect, get_battery, take_off, land, back_flip, combo
 
 
 def main(request):
@@ -8,8 +8,7 @@ def main(request):
 
 
 def connect_to_drone(request):
-    result = connect()
-    return HttpResponse(result)
+    return connect()
 
 
 def take_off_drone(request):
@@ -26,3 +25,7 @@ def battery_level_drone(request):
 
 def back_flip_drone(request):
     return HttpResponse(back_flip())
+
+
+def combo_drone(request):
+    return HttpResponse(combo())

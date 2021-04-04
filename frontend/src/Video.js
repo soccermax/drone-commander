@@ -14,7 +14,7 @@ let droneLanded = false;
 
 const useStyles = makeStyles((theme) => ({}));
 
-export default function Video({detectedGesture, setDetectedGesture, droneConnectionStatus}) {
+export default function Video({detectedGesture, setDetectedGesture, setDroneConnectionStatus}) {
   const theme = useTheme();
   const classes = useStyles();
   const webcamRef = useRef(null);
@@ -30,12 +30,12 @@ export default function Video({detectedGesture, setDetectedGesture, droneConnect
       droneLanded = false;
       const response = await axios.get("http://localhost:8000/api/takeOff");
       console.log(response);
-    } catch (err ) {
-      console.error(err );
+    } catch (err) {
+      console.error(err);
     }
   }
 
-    const landDrone = async () => {
+  const landDrone = async () => {
     try {
       if (droneLanded) {
         console.log("drone already landed");
@@ -82,12 +82,17 @@ export default function Video({detectedGesture, setDetectedGesture, droneConnect
               Math.max.apply(null, confidence)
             );
             setDetectedGesture(gesture.gestures[maxConfidence].name);
-            if (gesture.gestures[maxConfidence].name === "thumbs_up") {
-              // if (droneConnectionStatus === "connected" && detectedGesture === "thumbs_up") {
-              takeOffDrone();
-            } else if (gesture.gestures[maxConfidence].name === "thumbs_down") {
-              landDrone();
-            }
+            setDroneConnectionStatus(connectionStatus => {
+              if (connectionStatus == !"connected") {
+                return connectionStatus;
+              }
+              if (gesture.gestures[maxConfidence].name === "thumbs_up") {
+                takeOffDrone();
+              } else if (gesture.gestures[maxConfidence].name === "thumbs_down") {
+                landDrone();
+              }
+              return connectionStatus;
+            });
           } else {
             setDetectedGesture("no gesture");
           }

@@ -19,12 +19,12 @@ const useStyles = makeStyles({
 });
 
 
-export default function DroneControlButtons({detectedGesture, droneConnectionStatus, setDoneConnectionStatus}) {
+export default function DroneControlButtons({detectedGesture, droneConnectionStatus, setDroneConnectionStatus}) {
   const connectToDrone = async () => {
     try {
       console.log("send request");
       setTimeout(() => {
-        setDoneConnectionStatus("connected")
+        setDroneConnectionStatus("connected")
       }, 2000);
       const response = await axios.get("http://localhost:8000/api/connectDrone");
       console.log(response);
