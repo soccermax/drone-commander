@@ -1,4 +1,3 @@
-
 const fingerJoints = {
   thumb: [0, 1, 2, 3, 4],
   indexFinger: [0, 5, 6, 7, 8],
@@ -8,10 +7,10 @@ const fingerJoints = {
 };
 export const drawHand = (predictions, ctx) => {
   if (predictions.length > 0) {
-    predictions.forEach(prediction => {
+    predictions.forEach((prediction) => {
       const landmarks = prediction.landmarks;
 
-      Object.keys(fingerJoints).forEach(fingerJointKey => {
+      Object.keys(fingerJoints).forEach((fingerJointKey) => {
         const fingerJoint = fingerJoints[fingerJointKey];
         fingerJoint.forEach((dot, index) => {
           if (fingerJoint.length - 1 > index) {
@@ -22,17 +21,16 @@ export const drawHand = (predictions, ctx) => {
             ctx.lineWidth = 4;
             ctx.stroke();
           }
-        })
+        });
       });
 
-      landmarks.forEach(landmark => {
+      landmarks.forEach((landmark) => {
         const [x, y] = landmark;
         ctx.beginPath();
         ctx.arc(x, y, 5, 0, 3 * Math.PI);
         ctx.fillStyle = "aqua";
         ctx.fill();
       });
-    })
+    });
   }
-}
-
+};

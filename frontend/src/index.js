@@ -1,6 +1,6 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
 import Dashboard from "./Dashboard";
 // import reportWebVitals from './reportWebVitals';
 

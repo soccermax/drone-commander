@@ -1,57 +1,59 @@
-import {getSocket} from './socket';
+import { getSocket } from "./socket";
+import { GESTURE, DRONE_FLYING_STATE } from "./constants";
 
 const COMMANDS = {
   takeOff: "takeoff",
   land: "land",
   emergency: "emergency",
   backFlip: "flip b",
-  frontFlip: "flip f"
-}
-
-let droneState = "landed";
+  frontFlip: "flip f",
+  hovering: "command",
+};
 
 const _sendCommand = (command) => {
   console.log("drone control: %s", command);
   const socket = getSocket();
   socket.emit("command", command);
-}
+};
 
-export const controlDroneBasedOnGesture = (gesture) => {
+const controlDroneBasedOnGesture = (gesture, droneState) => {
   switch (gesture) {
-    case "thumbs_up":
-      if (droneState === "landed") {
-        droneState = "tookOff";
+    case GESTURE.thumbsUp:
+      if (droneState === DRONE_FLYING_STATE.landed) {
+        console.log("drone take off");
         return takeOff();
       } else {
-        return console.log("Drone already took off")
+        return console.log("Drone already took off");
       }
-    case "thumbs_down":
-      if (droneState === "tookOff") {
-        droneState = "landed";
+    case GESTURE.thumbsDown:
+      if (droneState === DRONE_FLYING_STATE.flying) {
         return land();
       } else {
-        return console.log("Drone already landed")
+        return console.log("Drone already landed");
       }
+    default:
+      break;
   }
-}
+};
 
 const takeOff = () => {
-  _sendCommand(COMMANDS.takeOff)
+  _sendCommand(COMMANDS.takeOff);
 };
 
 const land = () => {
-  _sendCommand(COMMANDS.land)
+  _sendCommand(COMMANDS.land);
 };
 
 const emergency = () => {
-  _sendCommand(COMMANDS.emergency)
+  _sendCommand(COMMANDS.emergency);
 };
 
 const backFlip = () => {
-  _sendCommand(COMMANDS.backFlip)
+  _sendCommand(COMMANDS.backFlip);
 };
 
 const frontFlip = () => {
-  _sendCommand(COMMANDS.frontFlip)
+  _sendCommand(COMMANDS.frontFlip);
 };
 
+export { controlDroneBasedOnGesture, land, takeOff, backFlip, frontFlip, emergency };
