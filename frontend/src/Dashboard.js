@@ -126,8 +126,8 @@ export default function Dashboard() {
   const [handPoseModelStatus, setHandPoseModelStatus] = useState("loading...");
   const [droneFlyingState, setDroneFlyingState] = useState(DRONE_FLYING_STATE.landed);
   const [droneState, setDroneState] = useState({
-    h: "-",
-    bat: "-",
+    h: 0,
+    bat: 0,
   });
   const [gestureDetectionActive, setGestureDetectionActive] = useState(false);
 
