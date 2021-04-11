@@ -49,7 +49,7 @@ io.on("connection", (clientSocket) => {
   if (!keepAliveSenderAttached) {
     keepAliveSenderAttached = true;
     clearInterval(interval);
-    interval = setInterval(() => sendDroneStartSDK(droneCommandSocket), 2000);
+    interval = setInterval(() => sendDroneStartSDK(droneCommandSocket), 10000);
   }
   clientSocket.on("disconnect", () => {
     clientSocket.disconnect(true);

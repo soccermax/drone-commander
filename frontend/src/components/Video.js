@@ -72,6 +72,7 @@ export default function Video({
             if (connectionStatus === CONNECTION_STATUS.connected) {
               setDroneFlyingState((currentValue) => {
                 controlDroneBasedOnGesture(gesture.gestures[maxConfidence].name, currentValue);
+                return currentValue;
               });
             }
             return connectionStatus;

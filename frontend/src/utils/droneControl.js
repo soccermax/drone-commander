@@ -11,7 +11,6 @@ const controlDroneBasedOnGesture = (gesture, droneState) => {
   switch (gesture) {
     case GESTURE.thumbsUp:
       if (droneState === DRONE_FLYING_STATE.landed) {
-        console.log("drone take off");
         return takeOff();
       }
     case GESTURE.thumbsDown:

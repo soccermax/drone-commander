@@ -26,7 +26,6 @@ const disconnectSocket = () => {
 
 const droneStateListener = (setDroneState, setDroneFlyingState) => {
   socket.on("dronestate", (message) => {
-    console.log("getting state from backi endi");
     setDroneState(message);
     setDroneFlyingState((currentValue) => {
       const height = Number(message.h);
