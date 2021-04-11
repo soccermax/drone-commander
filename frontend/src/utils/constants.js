@@ -19,4 +19,20 @@ const GESTURE = {
   thumbsDown: "thumbs_down",
 };
 
-export { CONNECTION_STATUS_DRONE, CONNECTION_STATUS_BACKEND, CONNECTION_STATUS, DRONE_FLYING_STATE, GESTURE };
+const DRONE_COMMANDS = {
+  takeOff: "takeoff",
+  land: "land",
+  emergency: "emergency",
+  backFlip: "flip b",
+  frontFlip: "flip f",
+  hovering: "command",
+};
+
+export {
+  CONNECTION_STATUS_DRONE,
+  CONNECTION_STATUS_BACKEND,
+  CONNECTION_STATUS,
+  DRONE_FLYING_STATE,
+  GESTURE,
+  DRONE_COMMANDS,
+};

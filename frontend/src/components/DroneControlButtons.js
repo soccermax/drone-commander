@@ -3,9 +3,9 @@ import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Title from "./Title";
 import { Button, FormControlLabel, Grid, Switch } from "@material-ui/core";
-import { getSocket, disconnect, droneStateListener } from "./utils/socket";
-import { CONNECTION_STATUS, CONNECTION_STATUS_DRONE, CONNECTION_STATUS_BACKEND } from "./utils/constants";
-import { land, takeOff, backFlip, frontFlip } from "./utils/droneControl";
+import { getSocket, disconnectSocket, droneStateListener, getSocketDisconnecting } from "../utils/socket";
+import { CONNECTION_STATUS, CONNECTION_STATUS_DRONE, CONNECTION_STATUS_BACKEND } from "../utils/constants";
+import { land, takeOff, backFlip, frontFlip } from "../utils/droneControl";
 
 const useStyles = makeStyles({
   depositContext: {
@@ -72,6 +72,9 @@ export default function DroneControlButtons({
   const connectToDrone = () => {
     const socket = getSocket();
     socket.on("status", (message) => {
+      if (getSocketDisconnecting()) {
+        return;
+      }
       switch (message) {
         case CONNECTION_STATUS_BACKEND.connected:
           setBackendConnectionStatus(CONNECTION_STATUS.connected);
@@ -87,11 +90,9 @@ export default function DroneControlButtons({
   };
 
   const disconnectFromDrone = () => {
-    disconnect();
-    setTimeout(() => {
-      setDroneConnectionStatus(CONNECTION_STATUS.disconnected);
-      setBackendConnectionStatus(CONNECTION_STATUS.disconnected);
-    }, 5000);
+    disconnectSocket();
+    setDroneConnectionStatus(CONNECTION_STATUS.disconnected);
+    setBackendConnectionStatus(CONNECTION_STATUS.disconnected);
   };
 
   const classes = useStyles();

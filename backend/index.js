@@ -5,7 +5,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const http = require("http").Server(app);
-const {throttle} = require("lodash");
+const { throttle } = require("lodash");
 
 const {
   CONNECTION_STATUS_BACKEND,
@@ -13,7 +13,7 @@ const {
   CONNECTION_STATUS_DRONE,
   DRONE_EMERGENCY_COMMAND,
 } = require("./constants");
-const {handleError, parseState} = require("./utils");
+const { handleError, parseState } = require("./utils");
 
 app.use(cors());
 const io = require("socket.io")(http, {
@@ -26,17 +26,19 @@ let keepAliveSenderAttached = false;
 const DRONE_PORT_COMMANDS = 8889;
 const DRONE_PORT_STATE = 8890;
 const DRONE_IP = "192.168.10.1";
-const droneCommandSocket = dgram.createSocket("udp4");
-droneCommandSocket.bind(DRONE_PORT_COMMANDS);
 
-const droneStateSocket = dgram.createSocket("udp4");
-droneStateSocket.bind(DRONE_PORT_STATE);
-
-const sendDroneStartSDK = () =>
+const sendDroneStartSDK = (droneCommandSocket) =>
   droneCommandSocket.send(START_DRONE_SDK, 0, START_DRONE_SDK.length, DRONE_PORT_COMMANDS, DRONE_IP, handleError);
 
+let interval = null;
 io.on("connection", (clientSocket) => {
-  sendDroneStartSDK();
+  const droneCommandSocket = dgram.createSocket("udp4");
+  droneCommandSocket.bind(DRONE_PORT_COMMANDS);
+
+  const droneStateSocket = dgram.createSocket("udp4");
+  droneStateSocket.bind(DRONE_PORT_STATE);
+
+  sendDroneStartSDK(droneCommandSocket);
   console.log("client connected");
   clientSocket.on("command", (command) => {
     console.log("command sent from browser");
@@ -44,18 +46,19 @@ io.on("connection", (clientSocket) => {
     droneCommandSocket.send(command, 0, command.length, DRONE_PORT_COMMANDS, DRONE_IP, handleError);
   });
   clientSocket.emit("status", CONNECTION_STATUS_BACKEND.connected);
-  let hoverIntervalId;
   if (!keepAliveSenderAttached) {
     keepAliveSenderAttached = true;
-    hoverIntervalId = setInterval(sendDroneStartSDK, 10000);
+    clearInterval(interval);
+    interval = setInterval(() => sendDroneStartSDK(droneCommandSocket), 2000);
   }
   clientSocket.on("disconnect", () => {
     clientSocket.disconnect(true);
     keepAliveSenderAttached = false;
+    droneCommandSocket.close();
+    droneStateSocket.close();
     console.log("client disconnected");
-    clearInterval(hoverIntervalId);
+    clearInterval(interval);
   });
-
   droneStateSocket.on(
     "message",
     throttle((state) => {
@@ -87,8 +90,8 @@ process.on("SIGINT", () => {
       handleError
     );
     droneCommandSocket.disconnect();
-
-  } catch (err) { } finally {
+  } catch (err) {
+  } finally {
     setTimeout(() => process.exit(2), 2000);
   }
 });

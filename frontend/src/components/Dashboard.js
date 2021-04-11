@@ -19,8 +19,8 @@ import { mainListItems } from "./listItems";
 import Video from "./Video";
 import DroneControlButtons from "./DroneControlButtons";
 import Status from "./Status";
-import { CONNECTION_STATUS, DRONE_FLYING_STATE } from "./utils/constants";
-import { disconnect } from "./utils/socket";
+import { CONNECTION_STATUS, DRONE_FLYING_STATE } from "../utils/constants";
+import { disconnectSocket } from "../utils/socket";
 
 function Copyright() {
   return (
@@ -139,7 +139,7 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    return disconnect;
+    return disconnectSocket;
   }, []);
   // const fixedHeightSmallPaper = clsx(classes.paper, classes.fixedHeightSmallPaper);
   const fixedHeightBigPaper = clsx(classes.paper, classes.fixedHeightBigPaper);
@@ -182,7 +182,6 @@ export default function Dashboard() {
         <div className={classes.appBarSpacer} />
         <Container className={classes.container}>
           <Grid container direction="row" justify="center" alignItems="center" spacing={3}>
-            {/* Buttons */}
             <Grid item xs={3}>
               <Grid container direction="column" spacing={3}>
                 <Grid item xs={12}>
@@ -202,7 +201,6 @@ export default function Dashboard() {
                 </Grid>
               </Grid>
             </Grid>
-            {/* Video */}
             <Grid item xs={6}>
               <Paper className={fixedHeightBigPaper}>
                 <Video
@@ -214,7 +212,6 @@ export default function Dashboard() {
                 />
               </Paper>
             </Grid>
-            {/* Buttons */}
             <Grid item xs={3}>
               <Grid container direction="column" spacing={3}>
                 <Grid item xs={12}>

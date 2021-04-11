@@ -3,27 +3,30 @@ import { land } from "./droneControl";
 import { DRONE_FLYING_STATE } from "./constants";
 
 let socket;
+let disconnecting = false;
 
-export const getSocket = () => {
+const getSocket = () => {
   if (!socket) {
     _connect();
   }
   return socket;
 };
 
-export const disconnect = () => {
-  if (!socket) {
-    return;
-  }
+const disconnectSocket = () => {
+  disconnecting = true;
   land();
   setTimeout(() => {
+    if (!socket) {
+      return;
+    }
     socket.disconnect();
     socket = null;
   }, 5000);
 };
 
-export const droneStateListener = (setDroneState, setDroneFlyingState) => {
+const droneStateListener = (setDroneState, setDroneFlyingState) => {
   socket.on("dronestate", (message) => {
+    console.log("getting state from backi endi");
     setDroneState(message);
     setDroneFlyingState((currentValue) => {
       const height = Number(message.h);
@@ -41,6 +44,11 @@ export const droneStateListener = (setDroneState, setDroneFlyingState) => {
   });
 };
 
+const getSocketDisconnecting = () => disconnecting;
+
 const _connect = () => {
+  disconnecting = false;
   socket = io("http://localhost:8080");
 };
+
+export { getSocket, disconnectSocket, droneStateListener, getSocketDisconnecting };

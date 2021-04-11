@@ -1,14 +1,14 @@
 import React, { useRef, useEffect } from "react";
 import * as handpose from "@tensorflow-models/handpose";
 import Webcam from "react-webcam";
-import { drawHand } from "./utils/drawHand";
+import { drawHand } from "../utils/drawHand";
 import * as fp from "fingerpose";
-import thumbsDown from "./fingerposes/thumbsDown";
+import thumbsDown from "../fingerposes/thumbsDown";
 // tf is required for loading the handpose model
 // eslint-disable-next-line no-unused-vars
 import * as tf from "@tensorflow/tfjs";
-import { controlDroneBasedOnGesture } from "./utils/droneControl";
-import { CONNECTION_STATUS } from "./utils/constants";
+import { controlDroneBasedOnGesture } from "../utils/droneControl";
+import { CONNECTION_STATUS } from "../utils/constants";
 
 export default function Video({
   setDetectedGesture,
