@@ -13,10 +13,12 @@ const controlDroneBasedOnGesture = (gesture, droneState) => {
       if (droneState === DRONE_FLYING_STATE.landed) {
         return takeOff();
       }
+      break;
     case GESTURE.thumbsDown:
       if (droneState === DRONE_FLYING_STATE.flying) {
         return land();
       }
+      break;
     default:
       break;
   }
