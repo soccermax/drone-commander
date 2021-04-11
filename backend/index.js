@@ -30,7 +30,6 @@ const DRONE_IP = "192.168.10.1";
 const sendDroneStartSDK = (droneCommandSocket) =>
   droneCommandSocket.send(START_DRONE_SDK, 0, START_DRONE_SDK.length, DRONE_PORT_COMMANDS, DRONE_IP, handleError);
 
-let interval = null;
 io.on("connection", (clientSocket) => {
   const droneCommandSocket = dgram.createSocket("udp4");
   droneCommandSocket.bind(DRONE_PORT_COMMANDS);
@@ -46,9 +45,9 @@ io.on("connection", (clientSocket) => {
     droneCommandSocket.send(command, 0, command.length, DRONE_PORT_COMMANDS, DRONE_IP, handleError);
   });
   clientSocket.emit("status", CONNECTION_STATUS_BACKEND.connected);
+  let interval;
   if (!keepAliveSenderAttached) {
     keepAliveSenderAttached = true;
-    clearInterval(interval);
     interval = setInterval(() => sendDroneStartSDK(droneCommandSocket), 10000);
   }
   clientSocket.on("disconnect", () => {
