@@ -1,27 +1,44 @@
 import { getSocket } from "./socket";
 import { GESTURE, DRONE_FLYING_STATE, DRONE_COMMANDS } from "./constants";
 
+let blockedForNewCommands = false;
+
 const _sendCommand = (command) => {
   console.log("drone control: %s", command);
   const socket = getSocket();
   socket.emit("command", command);
 };
 
-const controlDroneBasedOnGesture = (gesture, droneState) => {
+const controlDroneBasedOnGesture = (gesture, { state, lastCommand }) => {
+  if (blockedForNewCommands) {
+    return { state, lastCommand };
+  }
   switch (gesture) {
     case GESTURE.thumbsUp:
-      if (droneState === DRONE_FLYING_STATE.landed) {
-        return takeOff();
+      if (state === DRONE_FLYING_STATE.landed) {
+        takeOff();
+        _blockForNewCommands();
+        return { state, lastCommand: GESTURE.thumbsUp };
       }
       break;
     case GESTURE.thumbsDown:
-      if (droneState === DRONE_FLYING_STATE.flying) {
-        return land();
+      if (state === DRONE_FLYING_STATE.flying) {
+        land();
+        _blockForNewCommands();
+        return { state, lastCommand: GESTURE.thumbsDown };
       }
       break;
     default:
       break;
   }
+  return { state, lastCommand };
+};
+
+const _blockForNewCommands = () => {
+  blockedForNewCommands = true;
+  setTimeout(() => {
+    blockedForNewCommands = false;
+  }, 5000);
 };
 
 const takeOff = () => {

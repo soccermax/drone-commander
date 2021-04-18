@@ -28,15 +28,16 @@ const droneStateListener = (setDroneState, setDroneFlyingState) => {
   socket.on("dronestate", (message) => {
     setDroneState(message);
     setDroneFlyingState((currentValue) => {
+      const { state, lastCommand } = currentValue;
       const height = Number(message.h);
-      if (height === 0 && currentValue === DRONE_FLYING_STATE.landed) {
+      if (height === 0 && state === DRONE_FLYING_STATE.landed) {
         return currentValue;
-      } else if (height > 0 && currentValue === DRONE_FLYING_STATE.flying) {
+      } else if (height > 0 && state === DRONE_FLYING_STATE.flying) {
         return currentValue;
-      } else if (height === 0 && currentValue === DRONE_FLYING_STATE.flying) {
-        return DRONE_FLYING_STATE.landed;
-      } else if (height > 0 && currentValue === DRONE_FLYING_STATE.landed) {
-        return DRONE_FLYING_STATE.flying;
+      } else if (height === 0 && state === DRONE_FLYING_STATE.flying) {
+        return { state: DRONE_FLYING_STATE.landed, lastCommand };
+      } else if (height > 0 && state === DRONE_FLYING_STATE.landed) {
+        return { state: DRONE_FLYING_STATE.flying, lastCommand };
       }
       return currentValue;
     });

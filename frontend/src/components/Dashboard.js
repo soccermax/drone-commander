@@ -124,7 +124,10 @@ export default function Dashboard() {
   const [backendConnectionStatus, setBackendConnectionStatus] = React.useState(CONNECTION_STATUS.disconnected);
   const [detectedGesture, setDetectedGesture] = useState("no gesture");
   const [handPoseModelStatus, setHandPoseModelStatus] = useState("loading...");
-  const [droneFlyingState, setDroneFlyingState] = useState(DRONE_FLYING_STATE.landed);
+  const [droneFlyingState, setDroneFlyingState] = useState({
+    state: DRONE_FLYING_STATE.landed,
+    lastCommand: null,
+  });
   const [droneState, setDroneState] = useState({
     h: 0,
     bat: 0,
@@ -219,7 +222,7 @@ export default function Dashboard() {
                     <Status
                       handPoseModelStatus={handPoseModelStatus}
                       droneState={droneState}
-                      droneFlyingState={droneFlyingState}
+                      droneFlyingState={droneFlyingState.state}
                     />
                   </Paper>
                 </Grid>
