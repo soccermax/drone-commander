@@ -28,6 +28,13 @@ const controlDroneBasedOnGesture = (gesture, { state, lastCommand }) => {
         return { state, lastCommand: GESTURE.thumbsDown };
       }
       break;
+    // case GESTURE.victory:
+    //   if (state === DRONE_FLYING_STATE.flying) {
+    //     backFlip();
+    //     _blockForNewCommands();
+    //     return { state, lastCommand: GESTURE.victory };
+    //   }
+    //   break;
     default:
       break;
   }

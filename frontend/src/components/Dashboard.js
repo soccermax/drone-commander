@@ -223,6 +223,7 @@ export default function Dashboard() {
                       handPoseModelStatus={handPoseModelStatus}
                       droneState={droneState}
                       droneFlyingState={droneFlyingState.state}
+                      droneConnectionStatus={droneConnectionStatus}
                     />
                   </Paper>
                 </Grid>

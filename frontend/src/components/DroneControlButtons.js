@@ -80,8 +80,9 @@ export default function DroneControlButtons({
           setBackendConnectionStatus(CONNECTION_STATUS.connected);
           break;
         case CONNECTION_STATUS_DRONE.connected:
+          setBackendConnectionStatus(CONNECTION_STATUS.connected);
           setDroneConnectionStatus(CONNECTION_STATUS.connected);
-          droneStateListener(setDroneState, setDroneFlyingState);
+          droneStateListener(setDroneState, setDroneFlyingState, setBackendConnectionStatus, setDroneConnectionStatus);
           break;
         default:
           break;
@@ -139,20 +140,43 @@ export default function DroneControlButtons({
         </Typography>
         <p>Backend: {backendConnectionStatus}</p>
         <p>Drone: {droneConnectionStatus}</p>
-        <Button className={classes.buttonCenter} variant="contained" onClick={takeOff} color="primary">
+        <Button
+          disabled={droneConnectionStatus === CONNECTION_STATUS.disconnected}
+          className={classes.buttonCenter}
+          variant="contained"
+          onClick={takeOff}
+          color="primary"
+        >
           Takeoff
         </Button>
-        <Button className={classes.buttonCenter} variant="contained" onClick={land} color="primary">
+        <Button
+          disabled={droneConnectionStatus === CONNECTION_STATUS.disconnected}
+          className={classes.buttonCenter}
+          variant="contained"
+          onClick={land}
+          color="primary"
+        >
           Land
         </Button>
-        <Button className={classes.buttonCenter} variant="contained" onClick={backFlip} color="primary">
+        <Button
+          disabled={droneConnectionStatus === CONNECTION_STATUS.disconnected}
+          className={classes.buttonCenter}
+          variant="contained"
+          onClick={backFlip}
+          color="primary"
+        >
           Backflip
         </Button>
-        <Button className={classes.buttonCenter} variant="contained" onClick={frontFlip} color="primary">
+        <Button
+          disabled={droneConnectionStatus === CONNECTION_STATUS.disconnected}
+          className={classes.buttonCenter}
+          variant="contained"
+          onClick={frontFlip}
+          color="primary"
+        >
           Frontflip
         </Button>
       </div>
-      <div></div>
     </React.Fragment>
   );
 }

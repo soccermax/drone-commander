@@ -1,6 +1,6 @@
 import io from "socket.io-client";
 import { land } from "./droneControl";
-import { DRONE_FLYING_STATE } from "./constants";
+import { DRONE_FLYING_STATE, CONNECTION_STATUS } from "./constants";
 
 let socket;
 let disconnecting = false;
@@ -24,8 +24,19 @@ const disconnectSocket = () => {
   }, 5000);
 };
 
-const droneStateListener = (setDroneState, setDroneFlyingState) => {
+const droneStateListener = (
+  setDroneState,
+  setDroneFlyingState,
+  setBackendConnectionStatus,
+  setDroneConnectionStatus
+) => {
+  let droneStillConnectedTimeoutId;
   socket.on("dronestate", (message) => {
+    droneStillConnectedTimeoutId && clearTimeout(droneStillConnectedTimeoutId);
+    droneStillConnectedTimeoutId = setTimeout(() => {
+      setDroneConnectionStatus(CONNECTION_STATUS.disconnected);
+      setBackendConnectionStatus(CONNECTION_STATUS.disconnected);
+    }, 5000);
     setDroneState(message);
     setDroneFlyingState((currentValue) => {
       const { state, lastCommand } = currentValue;

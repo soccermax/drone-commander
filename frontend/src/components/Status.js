@@ -3,6 +3,7 @@ import Title from "./Title";
 import { Box, Button, LinearProgress, Typography } from "@material-ui/core";
 import { emergency } from "../utils/droneControl";
 import { makeStyles } from "@material-ui/core/styles";
+import { CONNECTION_STATUS } from "../utils/constants";
 
 const useStyles = makeStyles({
   depositContext: {
@@ -17,7 +18,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Status({ handPoseModelStatus, droneState, droneFlyingState }) {
+export default function Status({ handPoseModelStatus, droneState, droneFlyingState, droneConnectionStatus }) {
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -36,7 +37,12 @@ export default function Status({ handPoseModelStatus, droneState, droneFlyingSta
         <p>Height: {droneState.h}</p>
         <p>Flying State: {droneFlyingState}</p>
       </div>
-      <Button className={classes.buttonCenter} variant="contained" onClick={emergency}>
+      <Button
+        disabled={droneConnectionStatus === CONNECTION_STATUS.disconnected}
+        className={classes.buttonCenter}
+        variant="contained"
+        onClick={emergency}
+      >
         Stop engine
       </Button>
     </React.Fragment>

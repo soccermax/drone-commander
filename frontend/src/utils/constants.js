@@ -17,6 +17,7 @@ const DRONE_FLYING_STATE = {
 const GESTURE = {
   thumbsUp: "thumbs_up",
   thumbsDown: "thumbs_down",
+  victory: "victory",
 };
 
 const DRONE_COMMANDS = {
