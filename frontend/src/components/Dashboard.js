@@ -144,7 +144,6 @@ export default function Dashboard() {
   useEffect(() => {
     return disconnectSocket;
   }, []);
-  // const fixedHeightSmallPaper = clsx(classes.paper, classes.fixedHeightSmallPaper);
   const fixedHeightBigPaper = clsx(classes.paper, classes.fixedHeightBigPaper);
 
   return (
