@@ -1,5 +1,7 @@
 # Drone-commandor for tello drone
-Software package to control the tello drone with a gesture handpose model from TensorFlow.js via camera. Gestures include thumbs up for starting, thumbs down for landing, and victory for a backflip. Additionally, you can control the drone through a web interface and view information about battery and flying state.
+Software package to control the tello drone with a gesture handpose model from TensorFlow.js via camera. Gestures include thumbs up for starting, thumbs down for landing, and victory for a backflip. Additionally, you can control the drone through a web interface and view information about battery, flying state and flight attitue.
+![image](https://user-images.githubusercontent.com/18613510/130768871-84f6f641-54b5-4593-b922-55e86122370a.png)
+
 
 ## Installation
 - execute `npm i` in the directories backend and frontend
