@@ -23,6 +23,7 @@ Instead of gesture control the body segmentation model could be more reliable wh
 - offer a drag and drop kit for building a sequence of flying controls
   - User can fly with the sequences through a parkour
   - Possible controls should be takeoff, land, up, down, left, right, rotate, frontflip, backflip
+- Tello EDU offers advanced commands in the API kit. The drone recognizes additional mission pads which may offer more programming accuracy.  
 
 
 ## References
